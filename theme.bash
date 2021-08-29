@@ -13,10 +13,13 @@ PADDING=" " # use this character sequence to pad the segments around the separat
 
 PROMPT_CHAR=${POWERLINE_PROMPT_CHAR:=""}
 POWERLINE_LEFT_SEPARATOR="${PADDING}"
-POWERLINE_PROMPT="last_status user_info cwd npm scm"
+POWERLINE_PROMPT="python_virtual_env last_status user_info cwd npm scm"
 
 USER_INFO_SSH_CHAR="${PADDING}"
 USER_INFO_PROMPT_COLOR="C Bl"
+
+VIRTUAL_ENV_PROMPT_COLOR="M B"
+
 
 NPM_PROMPT_COLOR="Y Bl"
 
@@ -79,6 +82,36 @@ function __color {
   # Control codes enclosed in \[\] to not polute PS1
   # See http://unix.stackexchange.com/questions/71007/how-to-customize-ps1-properly
   echo "\[\e[${mod};${fg};${bg}m\]"
+}
+
+function __powerline_python_virtual_env_prompt {
+  local venv_path="$VIRTUAL_ENV"
+  local color=${VIRTUAL_ENV_PROMPT_COLOR}
+  local venv_info=""
+  if [[ "$venv_path" != "" ]]; then
+    
+    if [[ -f "venv/pyvenv.cfg" ]]; then 
+      shopt -s extglob
+      configfile="venv/pyvenv.cfg" # set the actual path name of your (DOS or Unix) config file
+      while IFS=' =' read -r lhs rhs
+      do
+          if [[ ! $lhs =~ ^\ *# && -n $lhs ]]; then
+              rhs="${rhs%%\#*}"    # Del in line right comments
+              rhs="${rhs%%*( )}"   # Del trailing spaces
+              rhs="${rhs%\"*}"     # Del opening string quotes 
+              rhs="${rhs#\"*}"     # Del closing string quotes 
+              if [[ ! $lhs == *-* ]]; then
+                declare $lhs="$rhs"
+              fi
+          fi
+      done < $configfile
+      eval prompt=$prompt
+      venv_info="$prompt"
+    else
+      venv_info=$(basename ${venv_path})
+    fi
+  fi
+  [[ -n "${venv_info}" ]] && echo "${venv_info}|${color}"
 }
 
 function __powerline_user_info_prompt {
