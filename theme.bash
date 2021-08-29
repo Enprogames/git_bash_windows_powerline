@@ -13,7 +13,7 @@ PADDING=" " # use this character sequence to pad the segments around the separat
 
 PROMPT_CHAR=${POWERLINE_PROMPT_CHAR:=""}
 POWERLINE_LEFT_SEPARATOR="${PADDING}"
-POWERLINE_PROMPT="python_virtual_env last_status user_info cwd npm scm"
+POWERLINE_PROMPT="last_status python_virtual_env user_info cwd npm scm"
 
 USER_INFO_SSH_CHAR="${PADDING}"
 USER_INFO_PROMPT_COLOR="C Bl"
