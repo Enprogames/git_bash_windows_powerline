@@ -89,7 +89,7 @@ function __powerline_python_virtual_env_prompt {
   local color=${VIRTUAL_ENV_PROMPT_COLOR}
   local venv_info=""
   if [[ "$venv_path" != "" ]]; then
-    
+    venv_info=$(basename $venv_path)
     if [[ -f "venv/pyvenv.cfg" ]]; then 
       shopt -s extglob
       configfile="venv/pyvenv.cfg" # set the actual path name of your (DOS or Unix) config file
@@ -105,13 +105,15 @@ function __powerline_python_virtual_env_prompt {
               fi
           fi
       done < $configfile
-      eval prompt=$prompt
-      venv_info="$prompt"
+      if [[ -v prompt ]]; then
+        eval prompt=$prompt
+        venv_info="$prompt"
+      fi
     else
       venv_info=$(basename ${venv_path})
     fi
   fi
-  [[ -n "${venv_info}" ]] && echo "${venv_info}|${color}"
+  [[ -n "${venv_info}" ]] && echo "${PADDING}(${venv_info})${PADDING}|${color}"
 }
 
 function __powerline_user_info_prompt {
